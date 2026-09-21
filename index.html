@@ -298,6 +298,87 @@
       transform: translateX(-50%) scaleX(1);
     }
 
+    /* Mobile Navigation - Hamburger Menu */
+    .mobile-nav-toggle {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--border-line);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      margin-left: auto;
+      transition: all 0.25s ease;
+    }
+
+    .mobile-nav-toggle span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: #fff;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .dynamic-island.mobile-open .mobile-nav-toggle span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .dynamic-island.mobile-open .mobile-nav-toggle span:nth-child(2) {
+      opacity: 0;
+    }
+    .dynamic-island.mobile-open .mobile-nav-toggle span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    @media (max-width: 768px) {
+      .dynamic-island-wrapper {
+        width: calc(100% - 24px);
+        max-width: 520px;
+      }
+
+      .dynamic-island {
+        width: 100%;
+        box-sizing: border-box;
+        flex-wrap: wrap;
+        padding: 7px;
+        border-radius: 24px;
+        gap: 4px;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+      }
+
+      .island-brand {
+        flex: 1;
+        margin-right: 0;
+      }
+
+      .mobile-nav-toggle {
+        display: flex;
+      }
+
+      .island-nav-tab,
+      .studio-theme-select {
+        display: none;
+        width: 100%;
+      }
+
+      .dynamic-island.mobile-open .island-nav-tab {
+        display: inline-flex;
+        min-height: 42px;
+        justify-content: flex-start;
+        padding-left: 18px;
+      }
+
+      .dynamic-island.mobile-open .studio-theme-select {
+        display: block;
+        width: 100%;
+        margin: 4px 0 2px;
+      }
+    }
+
     /* Brand Capsule in Navbar */
     .island-brand {
       display: flex;
@@ -713,6 +794,13 @@
           Yogeshwar
         </span>
       </div>
+
+      <!-- Mobile Hamburger Menu -->
+      <button class="mobile-nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" onclick="toggleMobileNav(this)">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
 
       <!-- Navigation Tabs - Clean Typography & Kinetic Active Indicator -->
       <button class="island-nav-tab active" data-target="home" onclick="switchStudioTab('home')">
@@ -1843,6 +1931,14 @@
     }
     animateFloatingNodes();
 
+    // Mobile navigation toggle
+    function toggleMobileNav(button) {
+      const nav = button.closest('.dynamic-island');
+      const isOpen = nav.classList.toggle('mobile-open');
+      button.setAttribute('aria-expanded', String(isOpen));
+      button.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+    }
+
     // 2. Dynamic Island Navigation Switcher
     function switchStudioTab(tabId) {
       const stages = document.querySelectorAll('.page-stage');
@@ -1861,6 +1957,17 @@
       });
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Close mobile menu after selecting a section
+      const mobileNav = document.querySelector('.dynamic-island');
+      const mobileToggle = document.querySelector('.mobile-nav-toggle');
+      if (mobileNav && mobileNav.classList.contains('mobile-open')) {
+        mobileNav.classList.remove('mobile-open');
+        if (mobileToggle) {
+          mobileToggle.setAttribute('aria-expanded', 'false');
+          mobileToggle.setAttribute('aria-label', 'Open navigation menu');
+        }
+      }
     }
 
     // Keyboard Shortcuts (1-9 to switch tabs instantly)
